@@ -44,7 +44,6 @@ const Women = () => {
     result = result.filter((product) => {
       return product.price >= priceRange[0] && product.price <= priceRange[1];
     });
-
     );
 
     // In-stock filter
@@ -395,7 +394,6 @@ const Women = () => {
                         <span className="text-xs">{product.rating}</span>
                       </div>
                     </div>
-                    <h3 className="font-medium">{product.name}</h3>
                     <h3 className="font-medium">{product.name}</h3>
                     
                     <div className="flex items-center justify-between">
