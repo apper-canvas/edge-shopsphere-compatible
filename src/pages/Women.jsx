@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 import ApperIcon from '../components/ApperIcon';
 import { useWishlist } from '../context/WishlistContext';
 import { womenProducts } from '../data/womenProducts';
+import { useNotifications } from '../context/NotificationsContext';
+import NotificationsPanel from '../components/NotificationsPanel';
 
 // Categories and brands for filtering
 const categories = ["All", "Dresses", "Tops", "Bottoms", "Outerwear", "Accessories", "Footwear"];
-import { useNotifications } from '../context/NotificationsContext';
-import NotificationsPanel from '../components/NotificationsPanel';
 const brands = ["All", "Elegance", "UrbanChic", "CozyComfort", "ActiveWear", "LuxeLife", "TrendyYou"];
 
 const Women = () => {
@@ -22,6 +23,8 @@ const Women = () => {
   const [showInStock, setShowInStock] = useState(false);
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const { unreadCount } = useNotifications();
+  const [showNotifications, setShowNotifications] = useState(false);
 
   // Apply filters when changed
   useEffect(() => {
@@ -38,11 +41,10 @@ const Women = () => {
     }
 
     // Price range filter
-    result = result.filter(
-      product => product.price >= priceRange[0] && product.price <= priceRange[1]
-  // Notifications state
-  const { unreadCount } = useNotifications();
-  const [showNotifications, setShowNotifications] = useState(false);
+    result = result.filter((product) => {
+      return product.price >= priceRange[0] && product.price <= priceRange[1];
+    });
+
     );
 
     // In-stock filter
@@ -123,21 +125,21 @@ const Women = () => {
     <div className="min-h-screen p-4 md:p-8">
       {/* Header with navigation */}
       <div className="mb-8 flex items-center justify-between">
-        <div>
-                <button onClick={() => setShowNotifications(!showNotifications)} className="relative flex items-center gap-1 text-sm hover:text-primary">
-                  <ApperIcon name="Bell" className="h-5 w-5" />
-                  {unreadCount > 0 && (
-                    <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">{unreadCount}</span>
-                  )}
-                </button>
-                               
+        <div className="flex flex-col">
+          <button onClick={() => setShowNotifications(!showNotifications)} className="relative flex items-center gap-1 text-sm hover:text-primary">
+            <ApperIcon name="Bell" className="h-5 w-5" />
+            {unreadCount > 0 && (
+              <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">{unreadCount}</span>
+            )}
+          </button>
+          
           <div className="mt-1 flex items-center gap-1 text-sm text-surface-500">
             <Link to="/" className="hover:text-primary">Home</Link>
             <span>/</span>
             <span>Women</span>
           </div>
         </div>
-        
+
         {/* Mobile Cart Button */}
         <button
           onClick={() => setIsCartOpen(true)}
@@ -158,12 +160,14 @@ const Women = () => {
         <div className="sticky top-4 hidden h-fit flex-col gap-4 md:flex md:col-span-1">
           <div className="card space-y-4">
             <h3 className="text-lg font-semibold">Filters</h3>
-            
+
             {/* Category Filter */}
             <div className="space-y-2">
               <h4 className="font-medium">Category</h4>
-      {/* Notifications Panel */}
-      {showNotifications && <NotificationsPanel isOpen={showNotifications} onClose={() => setShowNotifications(false)} />}
+
+              {/* Notifications Panel */}
+              {showNotifications && <NotificationsPanel isOpen={showNotifications} onClose={() => setShowNotifications(false)} />}
+
 
               <div className="flex flex-wrap gap-2">
                 {categories.map(category => (
@@ -391,7 +395,7 @@ const Women = () => {
                         <span className="text-xs">{product.rating}</span>
                       </div>
                     </div>
-                    
+                    <h3 className="font-medium">{product.name}</h3>
                     <h3 className="font-medium">{product.name}</h3>
                     
                     <div className="flex items-center justify-between">
@@ -558,14 +562,8 @@ const Women = () => {
                 </button>
               </div>
             )}
-          >
-            <button 
-              onClick={() => setIsCartOpen(false)}
-              className="absolute right-4 top-4 rounded-full p-1 hover:bg-surface-100"
-            >
-              <ApperIcon name="X" className="h-5 w-5" />
-            </button>
-            {/* Cart content would be rendered here similar to MainFeature.jsx */}
+          
+            {/* End of cart content */}
           </motion.div>
         </div>
       )}
