@@ -7,6 +7,7 @@ import { NotificationsProvider } from './context/NotificationsContext';
 import { WishlistProvider } from './context/WishlistContext';
 import Home from './pages/Home';
 import Women from './pages/Women';
+import Men from './pages/Men';
 import NotFound from './pages/NotFound';
 import Wishlist from './pages/Wishlist';
 import Checkout from './pages/Checkout';
@@ -58,6 +59,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/women" element={<Women />} />
+            <Route path="/men" element={<Men />} />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/notifications" element={<Notifications />} />
