@@ -73,7 +73,7 @@ const Home = () => {
                 { name: "Women", path: "/women" },
                 { name: "Men", path: "/men" },
                 { name: "Accessories", path: "/accessories" },
-                { name: "Sale", path: "#sale" },
+                { name: "Sale", path: "/sale" },
                 { name: "Collections", path: "#collections" }
               ].map((item) => (
                 <li key={item.name}>
