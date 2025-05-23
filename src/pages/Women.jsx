@@ -44,7 +44,6 @@ const Women = () => {
     result = result.filter((product) => {
       return product.price >= priceRange[0] && product.price <= priceRange[1];
     });
-    );
 
     // In-stock filter
     if (showInStock) {
