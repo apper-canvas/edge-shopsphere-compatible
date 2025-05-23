@@ -3,9 +3,11 @@ import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
 import ApperIcon from './components/ApperIcon';
+import { WishlistProvider } from './context/WishlistContext';
 import Home from './pages/Home';
 import Women from './pages/Women';
 import NotFound from './pages/NotFound';
+import Wishlist from './pages/Wishlist';
 import Checkout from './pages/Checkout';
 
 const App = () => {
@@ -34,7 +36,7 @@ const App = () => {
   };
 
   return (
-    <>
+    <WishlistProvider>
       {/* Theme toggle button */}
       <motion.button
         onClick={toggleDarkMode}
@@ -53,6 +55,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/women" element={<Women />} />
+          <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
@@ -71,7 +74,7 @@ const App = () => {
         theme={darkMode ? "dark" : "light"}
         toastClassName="rounded-lg"
       />
-    </>
+    </WishlistProvider>
   );
 };
 

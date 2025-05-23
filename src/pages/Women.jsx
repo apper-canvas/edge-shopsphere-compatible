@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import ApperIcon from '../components/ApperIcon';
+import { useWishlist } from '../context/WishlistContext';
 import { womenProducts } from '../data/womenProducts';
 
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 // Categories and brands for filtering
 const categories = ["All", "Dresses", "Tops", "Bottoms", "Outerwear", "Accessories", "Footwear"];
 const brands = ["All", "Elegance", "UrbanChic", "CozyComfort", "ActiveWear", "LuxeLife", "TrendyYou"];
 
 const Women = () => {
   const [products, setProducts] = useState(womenProducts);
-  const [filteredProducts, setFilteredProducts] = useState(womenProducts);
+  const [showInStock, setShowInStock] = useState(false); 
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
@@ -53,6 +56,15 @@ const Women = () => {
     
     if (existingItem) {
       // Increase quantity if already in cart
+  // Toggle wishlist function
+  const toggleWishlist = (product) => {
+    if (isInWishlist(product.id)) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist(product);
+    }
+  };
+
       setCart(cart.map(item => 
         item.id === product.id 
           ? { ...item, quantity: item.quantity + 1 } 
@@ -70,7 +82,7 @@ const Women = () => {
   const removeFromCart = (productId) => {
     const updatedCart = cart.filter(item => item.id !== productId);
     setCart(updatedCart);
-    toast.error("Item removed from cart");
+            <Link to="/" className="flex items-center"> 
   };
 
   // Update quantity function
@@ -85,7 +97,7 @@ const Women = () => {
   };
 
   // Calculate cart total
-  const cartTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+              <Link to="/wishlist" className="text-sm hover:text-primary">Wishlist</Link>
   
   // Handle price range change
   const handlePriceChange = (e, endpoint) => {
@@ -234,6 +246,17 @@ const Women = () => {
                 ))}
                 {cart.length > 2 && (
                   <div className="text-sm text-surface-500">
+
+                        {/* Wishlist button */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleWishlist(product);
+                          }}
+                          className="rounded-full bg-white/90 p-2 shadow-md transition-transform hover:scale-105 dark:bg-surface-800/90"
+                        >
+                          <ApperIcon name={isInWishlist(product.id) ? "HeartOff" : "Heart"} className={`h-4 w-4 ${isInWishlist(product.id) ? "text-red-500" : ""}`} />
+                        </button>
                     +{cart.length - 2} more items
                   </div>
                 )}

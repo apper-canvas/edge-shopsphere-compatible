@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { useWishlist } from '../context/WishlistContext';
 import ApperIcon from './ApperIcon';
 
 // Product data
@@ -86,6 +87,7 @@ const brands = ["All", "AudioMax", "FashionForward", "TechFit", "VisionStyle", "
 
 const MainFeature = () => {
   const navigate = useNavigate();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [products, setProducts] = useState(initialProducts);
   const [filteredProducts, setFilteredProducts] = useState(initialProducts);
   const [cart, setCart] = useState([]);
@@ -139,6 +141,15 @@ const MainFeature = () => {
       // Add new item
       setCart([...cart, { ...product, quantity: 1 }]);
       toast.success(`Added ${product.name} to your cart!`);
+    }
+  };
+
+  // Toggle wishlist function
+  const toggleWishlist = (product) => {
+    if (isInWishlist(product.id)) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist(product);
     }
   };
 
@@ -410,6 +421,17 @@ const MainFeature = () => {
                     >
                       <ApperIcon name="Eye" className="h-4 w-4" />
                     </button>
+
+                    {/* Wishlist button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleWishlist(product);
+                      }}
+                      className="absolute bottom-2 left-10 rounded-full bg-white/90 p-2 text-surface-800 opacity-0 transition-opacity group-hover:opacity-100 dark:bg-surface-800/90 dark:text-white"
+                    >
+                      <ApperIcon name={isInWishlist(product.id) ? "HeartOff" : "Heart"} className={`h-4 w-4 ${isInWishlist(product.id) ? "text-red-500" : ""}`} />
+                    </button>
                     
                     {/* Quick add button */}
                     {product.inStock && (
@@ -559,7 +581,13 @@ const MainFeature = () => {
                   </button>
                   
                   <button className="btn btn-outline">
-                    <ApperIcon name="Heart" className="h-4 w-4" />
+                    <ApperIcon 
+                      name={isInWishlist(selectedProduct.id) ? "HeartOff" : "Heart"} 
+                      className={`h-4 w-4 ${isInWishlist(selectedProduct.id) ? "text-red-500" : ""}`}
+                      onClick={() => {
+                        toggleWishlist(selectedProduct);
+                      }}
+                    />
                   </button>
                 </div>
               </div>
