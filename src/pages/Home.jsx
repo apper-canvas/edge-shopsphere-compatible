@@ -85,8 +85,7 @@ const Home = () => {
       
       {/* Notifications Panel */}
       {showNotifications && <NotificationsPanel isOpen={showNotifications} onClose={() => setShowNotifications(false)} />}
-        </div>
-      )}
+      
 
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-surface-900 dark:to-surface-800">
