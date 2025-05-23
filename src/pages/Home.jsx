@@ -72,7 +72,7 @@ const Home = () => {
                 { name: "New Arrivals", path: "#new-arrivals" },
                 { name: "Women", path: "/women" },
                 { name: "Men", path: "/men" },
-                { name: "Accessories", path: "#accessories" },
+                { name: "Accessories", path: "/accessories" },
                 { name: "Sale", path: "#sale" },
                 { name: "Collections", path: "#collections" }
               ].map((item) => (
