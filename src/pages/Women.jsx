@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
 import ApperIcon from '../components/ApperIcon';
 import { useWishlist } from '../context/WishlistContext';
 import { womenProducts } from '../data/womenProducts';
@@ -82,6 +81,7 @@ const Women = () => {
   const removeFromCart = (productId) => {
     const updatedCart = cart.filter(item => item.id !== productId);
     setCart(updatedCart);
+    toast.error("Item removed from cart");
   };
 
   // Update quantity function
@@ -99,6 +99,10 @@ const Women = () => {
   const cartTotal = cart.reduce((total, item) => {
     return total + (item.price * item.quantity);
   }, 0);
+
+  const shippingCost = 5.99;
+  const taxAmount = cartTotal * 0.08;
+  const orderTotal = cartTotal + shippingCost + taxAmount;
   
   // Handle price range change
   const handlePriceChange = (e, endpoint) => {
@@ -392,7 +396,7 @@ const Women = () => {
                         className="rounded-full p-1 hover:bg-surface-100"
                       >
                         <ApperIcon name={isInWishlist(product.id) ? "HeartOff" : "Heart"} className={`h-4 w-4 ${isInWishlist(product.id) ? "text-red-500" : ""}`} />
-                      </span>
+                      </button>
                     </div>
                     
                     {/* Size options if available */}
@@ -434,14 +438,119 @@ const Women = () => {
             transition={{ type: "tween", duration: 0.3 }}
             className="h-full w-full max-w-md overflow-auto bg-white p-6 shadow-xl dark:bg-surface-900"
           >
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">Your Shopping Cart</h2>
+              <button 
+                onClick={() => setIsCartOpen(false)}
+                className="rounded-full p-1 text-surface-500 hover:bg-surface-100 hover:text-surface-800 dark:hover:bg-surface-800 dark:hover:text-surface-100"
+              >
+                <ApperIcon name="X" className="h-5 w-5" />
+              </button>
+            </div>
+            
+            {cart.length > 0 ? (
+              <>
+                <div className="mt-6 space-y-4">
+                  {cart.map(item => (
+                    <div key={item.id} className="flex gap-4 rounded-lg border border-surface-200 p-3 dark:border-surface-700">
+                      <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md bg-surface-100 dark:bg-surface-800">
+                        <img 
+                          src={item.image}
+                          alt={item.name}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                      
+                      <div className="flex flex-1 flex-col">
+                        <div className="flex justify-between">
+                          <h3 className="font-medium">{item.name}</h3>
+                          <button
+                            onClick={() => removeFromCart(item.id)}
+                            className="text-surface-400 hover:text-red-500"
+                          >
+                            <ApperIcon name="Trash2" className="h-4 w-4" />
+                          </button>
+                        </div>
+                        
+                        <span className="text-sm text-surface-500">{item.brand}</span>
+                        
+                        <div className="mt-auto flex items-center justify-between">
+                          <div className="flex items-center rounded-lg border border-surface-200 dark:border-surface-700">
+                            <button
+                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              className="px-2 py-1 text-surface-500 hover:text-surface-800 dark:hover:text-white"
+                            >
+                              <ApperIcon name="Minus" className="h-3 w-3" />
+                            </button>
+                            <span className="w-8 text-center text-sm">{item.quantity}</span>
+                            <button
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              className="px-2 py-1 text-surface-500 hover:text-surface-800 dark:hover:text-white"
+                            >
+                              <ApperIcon name="Plus" className="h-3 w-3" />
+                            </button>
+                          </div>
+                          
+                          <span className="font-medium">
+                            ${(item.price * item.quantity).toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="mt-6 space-y-2 border-t border-surface-200 pt-4 dark:border-surface-700">
+                  <div className="flex justify-between">
+                    <span>Subtotal</span>
+                    <span>${cartTotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Shipping</span>
+                    <span>${shippingCost.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Tax</span>
+                    <span>${taxAmount.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between border-t border-surface-200 pt-2 text-lg font-bold dark:border-surface-700">
+                    <span>Total</span>
+                    <span>${orderTotal.toFixed(2)}</span>
+                  </div>
+                </div>
+                
+                <div className="mt-6">
+                  <button className="btn btn-primary w-full">Proceed to Checkout</button>
+                  <button 
+                    className="mt-2 w-full text-center text-sm text-surface-500 hover:text-surface-800 dark:hover:text-white"
+                    onClick={() => setIsCartOpen(false)}
+                  >
+                    Continue Shopping
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="flex h-60 flex-col items-center justify-center">
+                <div className="rounded-full bg-surface-100 p-4 dark:bg-surface-800">
+                  <ApperIcon name="ShoppingCart" className="h-8 w-8 text-surface-400" />
+                </div>
+                <h3 className="mt-4 text-lg font-medium">Your cart is empty</h3>
+                <p className="mt-1 text-sm text-surface-500">Looks like you haven't added any products yet</p>
+                <button 
+                  onClick={() => setIsCartOpen(false)} 
+                  className="btn btn-primary mt-4"
+                >
+                  Start Shopping
+                </button>
+              </div>
+            )}
+          >
             <button 
               onClick={() => setIsCartOpen(false)}
               className="absolute right-4 top-4 rounded-full p-1 hover:bg-surface-100"
             >
               <ApperIcon name="X" className="h-5 w-5" />
             </button>
-            
-            <h2 className="text-xl font-semibold">Your Shopping Cart</h2>
             {/* Cart content would be rendered here similar to MainFeature.jsx */}
           </motion.div>
         </div>
