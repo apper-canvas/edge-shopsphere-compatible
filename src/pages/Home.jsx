@@ -68,14 +68,30 @@ const Home = () => {
           {/* Navigation */}
           <nav className="mt-4 hidden overflow-x-auto md:block">
             <ul className="flex space-x-8">
-              {["New Arrivals", "Women", "Men", "Accessories", "Sale", "Collections"].map((item) => (
-                <li key={item} className={item === "Women" ? "relative" : ""}>
-                  <a 
-                    href="#" 
+              {[
+                { name: "New Arrivals", path: "#new-arrivals" },
+                { name: "Women", path: "/women" },
+                { name: "Men", path: "#men" },
+                { name: "Accessories", path: "#accessories" },
+                { name: "Sale", path: "#sale" },
+                { name: "Collections", path: "#collections" }
+              ].map((item) => (
+                <li key={item.name}>
+                  {item.path.startsWith('/') ? (
+                    <Link 
+                      to={item.path}
                     className="relative py-2 text-sm font-medium hover:text-primary"
-                  >
-                    {item}
-                  </a>
+                    >
+                      {item.name}
+                    </Link>
+                  ) : (
+                    <a 
+                      href={item.path}
+                      className="relative py-2 text-sm font-medium hover:text-primary"
+                    >
+                      {item.name}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
