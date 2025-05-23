@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
 import ApperIcon from './components/ApperIcon';
 import Home from './pages/Home';
+import Women from './pages/Women';
 import NotFound from './pages/NotFound';
 
 const App = () => {
@@ -50,6 +51,7 @@ const App = () => {
       <AnimatePresence mode="wait">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/women" element={<Women />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>
