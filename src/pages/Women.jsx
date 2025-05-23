@@ -7,6 +7,8 @@ import { womenProducts } from '../data/womenProducts';
 
 // Categories and brands for filtering
 const categories = ["All", "Dresses", "Tops", "Bottoms", "Outerwear", "Accessories", "Footwear"];
+import { useNotifications } from '../context/NotificationsContext';
+import NotificationsPanel from '../components/NotificationsPanel';
 const brands = ["All", "Elegance", "UrbanChic", "CozyComfort", "ActiveWear", "LuxeLife", "TrendyYou"];
 
 const Women = () => {
@@ -38,6 +40,9 @@ const Women = () => {
     // Price range filter
     result = result.filter(
       product => product.price >= priceRange[0] && product.price <= priceRange[1]
+  // Notifications state
+  const { unreadCount } = useNotifications();
+  const [showNotifications, setShowNotifications] = useState(false);
     );
 
     // In-stock filter
@@ -119,7 +124,13 @@ const Women = () => {
       {/* Header with navigation */}
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold md:text-3xl">Women's Collection</h1>
+                <button onClick={() => setShowNotifications(!showNotifications)} className="relative flex items-center gap-1 text-sm hover:text-primary">
+                  <ApperIcon name="Bell" className="h-5 w-5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">{unreadCount}</span>
+                  )}
+                </button>
+                               
           <div className="mt-1 flex items-center gap-1 text-sm text-surface-500">
             <Link to="/" className="hover:text-primary">Home</Link>
             <span>/</span>
@@ -151,6 +162,9 @@ const Women = () => {
             {/* Category Filter */}
             <div className="space-y-2">
               <h4 className="font-medium">Category</h4>
+      {/* Notifications Panel */}
+      {showNotifications && <NotificationsPanel isOpen={showNotifications} onClose={() => setShowNotifications(false)} />}
+
               <div className="flex flex-wrap gap-2">
                 {categories.map(category => (
                   <button

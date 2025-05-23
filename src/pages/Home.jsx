@@ -1,18 +1,22 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useNotifications } from '../context/NotificationsContext';
 import ApperIcon from '../components/ApperIcon';
 import MainFeature from '../components/MainFeature';
+import NotificationsPanel from '../components/NotificationsPanel';
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [showNotifications, setShowNotifications] = useState(false);
+  const { unreadCount } = useNotifications();
 
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.5 }
   };
+
+  const [showNotifications, setShowNotifications] = useState(false);
 
   return (
     <div className="min-h-screen">
@@ -54,7 +58,9 @@ const Home = () => {
               
               <button onClick={() => setShowNotifications(!showNotifications)} className="hidden items-center gap-1 text-sm hover:text-primary md:flex relative">
                 <ApperIcon name="Bell" className="h-5 w-5" />
-                <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">2</span>
+                {unreadCount > 0 && (
+                  <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">{unreadCount}</span>
+                )}
               </button>
             </div>
           </div>
@@ -77,25 +83,8 @@ const Home = () => {
         </div>
       </header>
       
-      {/* Notifications Dropdown */}
-      {showNotifications && (
-        <div className="absolute right-4 top-16 z-50 w-80 rounded-lg bg-white p-4 shadow-lg dark:bg-surface-800">
-          <div className="flex items-center justify-between border-b border-surface-200 pb-2 dark:border-surface-700">
-            <h3 className="font-semibold">Notifications</h3>
-            <span className="rounded-full bg-primary px-2 py-0.5 text-xs text-white">2 new</span>
-          </div>
-          <div className="mt-2 space-y-3">
-            <div className="rounded-lg bg-surface-100 p-3 dark:bg-surface-700">
-              <div className="flex items-start gap-3">
-                <ApperIcon name="Tag" className="mt-0.5 h-5 w-5 text-primary" />
-                <div>
-                  <p className="text-sm">Special offer: Get 20% off on all accessories today!</p>
-                  <p className="mt-1 text-xs text-surface-500">2 hours ago</p>
-                </div>
-              </div>
-            </div>
-            {/* Add more notification items here */}
-          </div>
+      {/* Notifications Panel */}
+      {showNotifications && <NotificationsPanel isOpen={showNotifications} onClose={() => setShowNotifications(false)} />}
         </div>
       )}
 

@@ -3,12 +3,14 @@ import { Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
 import ApperIcon from './components/ApperIcon';
+import { NotificationsProvider } from './context/NotificationsContext';
 import { WishlistProvider } from './context/WishlistContext';
 import Home from './pages/Home';
 import Women from './pages/Women';
 import NotFound from './pages/NotFound';
 import Wishlist from './pages/Wishlist';
 import Checkout from './pages/Checkout';
+import Notifications from './pages/Notifications';
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(() => {
@@ -36,45 +38,48 @@ const App = () => {
   };
 
   return (
-    <WishlistProvider>
-      {/* Theme toggle button */}
-      <motion.button
-        onClick={toggleDarkMode}
-        className="fixed right-4 top-4 z-50 rounded-full bg-white p-2 shadow-soft dark:bg-surface-800"
-        whileTap={{ scale: 0.95 }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-      >
-        <ApperIcon 
-          name={darkMode ? "Sun" : "Moon"} 
-          className="h-5 w-5 text-surface-800 dark:text-surface-100" 
+    <NotificationsProvider>
+      <WishlistProvider>
+        {/* Theme toggle button */}
+        <motion.button
+          onClick={toggleDarkMode}
+          className="fixed right-4 top-4 z-50 rounded-full bg-white p-2 shadow-soft dark:bg-surface-800"
+          whileTap={{ scale: 0.95 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <ApperIcon 
+            name={darkMode ? "Sun" : "Moon"} 
+            className="h-5 w-5 text-surface-800 dark:text-surface-100" 
+          />
+        </motion.button>
+
+        <AnimatePresence mode="wait">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/women" element={<Women />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AnimatePresence>
+
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme={darkMode ? "dark" : "light"}
+          toastClassName="rounded-lg"
         />
-      </motion.button>
-
-      <AnimatePresence mode="wait">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/women" element={<Women />} />
-          <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </AnimatePresence>
-
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme={darkMode ? "dark" : "light"}
-        toastClassName="rounded-lg"
-      />
-    </WishlistProvider>
+      </WishlistProvider>
+    </NotificationsProvider>
   );
 };
 
