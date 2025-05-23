@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import ApperIcon from './ApperIcon';
 
 // Product data
@@ -84,6 +85,7 @@ const categories = ["All", "Electronics", "Clothing", "Accessories", "Footwear"]
 const brands = ["All", "AudioMax", "FashionForward", "TechFit", "VisionStyle", "TravelLux", "StepStyle"];
 
 const MainFeature = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState(initialProducts);
   const [filteredProducts, setFilteredProducts] = useState(initialProducts);
   const [cart, setCart] = useState([]);
@@ -160,6 +162,9 @@ const MainFeature = () => {
 
   // Calculate cart total
   const cartTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  const shippingCost = 5.99;
+  const taxAmount = cartTotal * 0.08;
+  const orderTotal = cartTotal + shippingCost + taxAmount;
   
   // Handle price range change
   const handlePriceChange = (e, endpoint) => {
@@ -169,6 +174,12 @@ const MainFeature = () => {
     } else {
       setPriceRange([priceRange[0], value]);
     }
+  };
+
+  // Handle checkout
+  const handleCheckout = () => {
+    navigate('/checkout', { state: { cart, cartTotal, shippingCost, taxAmount, orderTotal } });
+    setIsCartOpen(false);
   };
 
   return (
@@ -636,15 +647,15 @@ const MainFeature = () => {
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>
-                    <span>$5.99</span>
+                    <span>${shippingCost.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Tax</span>
-                    <span>${(cartTotal * 0.08).toFixed(2)}</span>
+                    <span>${taxAmount.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between border-t border-surface-200 pt-2 text-lg font-bold dark:border-surface-700">
                     <span>Total</span>
-                    <span>${(cartTotal + 5.99 + (cartTotal * 0.08)).toFixed(2)}</span>
+                    <span>${orderTotal.toFixed(2)}</span>
                   </div>
                 </div>
                 
@@ -652,9 +663,7 @@ const MainFeature = () => {
                   <button 
                     className="btn btn-primary w-full"
                     onClick={() => {
-                      toast.success("Order placed successfully! Redirecting to checkout...");
-                      setIsCartOpen(false);
-                    }}
+                      handleCheckout();}}
                   >
                     Proceed to Checkout
                   </button>

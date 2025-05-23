@@ -6,6 +6,7 @@ import ApperIcon from './components/ApperIcon';
 import Home from './pages/Home';
 import Women from './pages/Women';
 import NotFound from './pages/NotFound';
+import Checkout from './pages/Checkout';
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(() => {
@@ -52,6 +53,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/women" element={<Women />} />
+          <Route path="/checkout" element={<Checkout />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>
